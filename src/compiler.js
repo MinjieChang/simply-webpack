@@ -55,9 +55,9 @@ class Compiler {
     const entry = path.resolve(this.entry)
 
     const { path: outputPath, filename } = this.output
-
+    
     const file = `
-      function run(modules) {
+      (function (modules) {
         function rawRequire(path) {
           const module = {
             exports: {}
@@ -72,8 +72,7 @@ class Compiler {
           return module.exports
         }
         return rawRequire('${entry}')
-      }
-      run(${JSON.stringify(modules)})
+      })(${JSON.stringify(modules)})
     `
     if (!fs.existsSync(outputPath)) {
       fs.mkdirSync(outputPath)
