@@ -26,6 +26,9 @@ class Compiler {
       }
     }
     this.modules = modules
+    // 生成文件
+    this.emitFiles()
+    
   }
   buildModules(filename) {
     const file = fs.readFileSync(filename, 'utf-8')
@@ -38,6 +41,37 @@ class Compiler {
       dependencies,
     }
     return result
+  }
+  emitFiles() {
+    const { path: outputPath, filename } = this.output
+    const modules = {}
+    this.modules.forEach(module => {
+      modules[module.filename] = {
+        code: `function fn(module, require, exports){${module.code}}`,
+        dependencieMap: module.dependencieMap
+      }
+    })
+    console.log(modules);
+
+    const entry = path.resolve(this.entry)
+
+    function run(modules) {
+      function rawRequire(path) {
+        const module = {
+          exports: {}
+        }
+        const { code, dependencieMap } = modules[path]
+        console.log(dependencieMap, 'dependencieMap');
+        let require = (path) => {
+          return rawRequire(dependencieMap[path])
+        }
+        let codeFn = eval("(false || " + code + ")");
+        codeFn(module, require, module.exports)
+        return module.exports
+      }
+      return rawRequire(entry)
+    }
+    run(modules)
   }
 }
 
