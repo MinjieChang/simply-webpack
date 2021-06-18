@@ -11,7 +11,7 @@ class Compiler {
   }
   run() {
     // 依赖收集
-    const entry = this.buildModules( path.resolve(this.entry))
+    const entry = this.buildModules(path.resolve(this.entry))
     const modules = [entry]
     for (let i = 0; i < modules.length; i++) {
       const module = modules[i];

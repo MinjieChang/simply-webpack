@@ -24,7 +24,7 @@ const transform = (code) => {
   })
 }
 
-const generator = (code) => {
+const generator = (ast, code) => {
   return babelGenerator(ast, { compact: true }, code)
 }
 
