@@ -43,7 +43,6 @@ class Compiler {
     return result
   }
   emitFiles() {
-    const { path: outputPath, filename } = this.output
     const modules = {}
     this.modules.forEach(module => {
       modules[module.filename] = {
@@ -55,23 +54,31 @@ class Compiler {
 
     const entry = path.resolve(this.entry)
 
-    function run(modules) {
-      function rawRequire(path) {
-        const module = {
-          exports: {}
+    const { path: outputPath, filename } = this.output
+
+    const file = `
+      function run(modules) {
+        function rawRequire(path) {
+          const module = {
+            exports: {}
+          }
+          const { code, dependencieMap } = modules[path]
+          console.log(dependencieMap, 'dependencieMap');
+          let require = (path) => {
+            return rawRequire(dependencieMap[path])
+          }
+          let codeFn = eval("(false || " + code + ")");
+          codeFn(module, require, module.exports)
+          return module.exports
         }
-        const { code, dependencieMap } = modules[path]
-        console.log(dependencieMap, 'dependencieMap');
-        let require = (path) => {
-          return rawRequire(dependencieMap[path])
-        }
-        let codeFn = eval("(false || " + code + ")");
-        codeFn(module, require, module.exports)
-        return module.exports
+        return rawRequire('${entry}')
       }
-      return rawRequire(entry)
+      run(${JSON.stringify(modules)})
+    `
+    if (!fs.existsSync(outputPath)) {
+      fs.mkdirSync(outputPath)
     }
-    run(modules)
+    fs.writeFileSync(path.join(outputPath, filename), file, 'utf-8')
   }
 }
 
