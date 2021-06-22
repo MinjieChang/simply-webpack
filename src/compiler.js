@@ -13,6 +13,26 @@ class Compiler {
     // 依赖收集
     const entry = this.buildModules(path.resolve(this.entry))
     const modules = [entry]
+
+    // 深度优先
+    // const walk = (module) => {
+    //   const { dependencies, filename } = module
+    //   if (!dependencies || !dependencies.length) {
+    //     return
+    //   }
+    //   module.dependencieMap = {}
+    //   dependencies.forEach(dependencie => {
+    //     const dependenciePath = path.join(path.dirname(filename), dependencie)
+    //     module.dependencieMap[dependencie] = dependenciePath
+    //     const depModule = this.buildModules(dependenciePath)
+    //     modules.push(depModule)
+    //     walk(depModule)
+    //   })
+    // }
+    // walk(entry)
+
+    // 广度优先，实际上广度优先更加合理
+    // 由于深度优先在递归的层级过深的情况下容易出现栈溢出的情况
     for (let i = 0; i < modules.length; i++) {
       const module = modules[i];
       const { filename, dependencies } = module
