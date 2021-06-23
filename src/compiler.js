@@ -1,12 +1,14 @@
 const path = require('path')
 const fs = require('fs')
-const { parser, getModuleDependences, transform } = require('./parser')
+const { parser, getModuleDependences, transformWithPlugins ,transformFromAst } = require('./parser')
+const { transformPath, addFileNameSuffix } = require('./util')
 
 class Compiler {
   constructor(options) {
-    const { entry, output } = options
+    const { entry, output, module = {} } = options
     this.entry = entry
     this.output = output
+    this.rules = module.rules || []
     this.modules = []
   }
   run() {
@@ -39,7 +41,7 @@ class Compiler {
       if (dependencies) {
         module.dependencieMap = {}
         dependencies.forEach((dependencie) => {
-          const dependenciePath = path.join(path.dirname(filename), dependencie)
+          const dependenciePath = transformPath(dependencie, filename)
           module.dependencieMap[dependencie] = dependenciePath
           modules.push(this.buildModules(dependenciePath))
         })
@@ -51,10 +53,30 @@ class Compiler {
     
   }
   buildModules(filename) {
-    const file = fs.readFileSync(filename, 'utf-8')
-    const ast = parser(file)
-    const dependencies = getModuleDependences(ast)
-    const { code } = transform(file)
+    const file = fs.readFileSync(addFileNameSuffix(filename), 'utf-8')
+
+    let ast
+    let dependencies
+    let code
+
+    let usePlugins = false
+    let usePresets = false
+    this.rules.forEach(rule => {
+      // node_modules 下的文件不需要加上插件和presets
+      if (rule.includes && rule.includes.test(filename) && rule.test.test(addFileNameSuffix(filename))
+        || rule.excludes && !rule.excludes.test(filename) && rule.test.test(addFileNameSuffix(filename))
+      ) {
+        usePlugins = true
+        usePresets = true
+      }
+      ast = transformWithPlugins(file, usePlugins, rule.use.plugins).ast
+      dependencies = getModuleDependences(ast)
+      code = transformFromAst(ast, usePresets).code
+    })
+    // 1、先用自定义插件转换一下
+    // const { ast } = transformWithPlugins(file)
+    // const dependencies = getModuleDependences(ast)
+    // const { code } = transformFromAst(ast)
     const result = {
       code,
       filename,
@@ -83,7 +105,6 @@ class Compiler {
             exports: {}
           }
           const { code, dependencieMap } = modules[path]
-          console.log(dependencieMap, 'dependencieMap');
           let require = (path) => {
             return rawRequire(dependencieMap[path])
           }

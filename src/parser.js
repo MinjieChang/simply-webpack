@@ -13,12 +13,29 @@ const getModuleDependences = (ast) => {
     ImportDeclaration: function(path) {
       dependencies.push(path.node.source.value)
     },
+    CallExpression: function (path) {
+      if (path.node.callee.name === 'require') {
+        dependencies.push(path.node.arguments[0].value)
+      }
+    },
   }
   babelTraverse(ast, visitor)
   return dependencies
 }
 
-const transform = (code) => {
+const transformWithPlugins = (code, usePlugins, plugins) => {
+  return babel.transform(code, {
+    plugins: usePlugins ? plugins: []
+  })
+}
+
+const transformFromAst = (ast, usePresets) => {
+  return babel.transformFromAst(ast, null, {
+    presets: usePresets ? ['env'] : []
+  })
+}
+
+const transformFromFile = (code) => {
   return babel.transform(code, {
     presets: ['env']
   })
@@ -30,7 +47,9 @@ const generator = (ast, code) => {
 
 module.exports = {
   parser,
-  transform,
   generator,
+  transformFromAst,
+  transformFromFile,
+  transformWithPlugins,
   getModuleDependences,
 }
