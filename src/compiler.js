@@ -1,6 +1,6 @@
 const path = require('path')
 const fs = require('fs')
-const { parser, getModuleDependences, transformWithPlugins ,transformFromAst } = require('./parser')
+const { getModuleDependences, transformWithPlugins ,transformFromAst } = require('./parser')
 const { transformPath, addFileNameSuffix } = require('./util')
 
 class Compiler {
@@ -92,7 +92,6 @@ class Compiler {
         dependencieMap: module.dependencieMap
       }
     })
-    console.log(modules);
 
     const entry = path.resolve(this.entry)
 

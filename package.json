@@ -8,8 +8,17 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "babel-node src/index.js"
+    "start": "babel-node src/index.js",
+    "build": "babel src --out-dir lib",
+    "prepublish": "npm run build"
   },
+  "bin": {
+    "simple-webpack": "lib/index.js"
+  },
+  "files": [
+    "lib",
+    "src"
+  ],
   "keywords": [],
   "author": "",
   "license": "ISC",
