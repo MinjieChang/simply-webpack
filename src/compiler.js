@@ -1,5 +1,6 @@
 const path = require('path')
 const fs = require('fs')
+const chalk = require('chalk');
 const { getModuleDependences, transformWithPlugins ,transformFromAst } = require('./parser')
 const { transformPath, addFileNameSuffix } = require('./util')
 
@@ -117,7 +118,8 @@ class Compiler {
     if (!fs.existsSync(outputPath)) {
       fs.mkdirSync(outputPath)
     }
-    fs.writeFileSync(path.join(outputPath, filename), file, 'utf-8')
+    fs.writeFileSync(path.resolve(outputPath, filename), file, 'utf-8')
+    console.log(chalk.cyan(`congratulations, the packing is completed, please go .${/(\/\w+\/\w+.js)$/.exec(path.resolve(outputPath, filename))[0]} to check it`));
   }
 }
 

@@ -38,6 +38,7 @@
   "dependencies": {
     "babel-plugin-console-omit": "^1.0.2",
     "babel-plugin-lodash-import": "^1.0.3",
+    "chalk": "^4.1.1",
     "lodash": "^4.17.21"
   }
 }

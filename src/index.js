@@ -2,6 +2,7 @@
 
 const path = require('path')
 const fs = require('fs')
+const chalk = require('chalk');
 const Compiler = require('./compiler')
 
 let configFile = './webpack.config.js'
@@ -13,7 +14,7 @@ if (optionName === '--config' && fileName) {
   if (fs.existsSync(path.join(process.cwd(), fileName))) {
     configFile = fileName
   } else {
-    console.log('webpack config file not exit, please check')
+    console.log(chalk.red(fileName + ' not exist, please check'));
     process.exit(1)
   }
 }
