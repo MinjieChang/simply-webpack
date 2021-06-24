@@ -1,5 +1,5 @@
 const modules = {
-  '/Users/chang/Desktop/simplify-webpack/test/index.js': {
+  '/Users/chang/Desktop/simply-webpack/test/index.js': {
     code: "function fn(module, require, exports){'use strict';\n" +
       '\n' +
       "var _a = require('./a.js');\n" +
@@ -15,11 +15,11 @@ const modules = {
       'console.log(_c2.default);\n' +
       '(0, _a2.default)();}',
     dependencieMap: {
-      './a.js': '/Users/chang/Desktop/simplify-webpack/test/a.js',
-      './c.js': '/Users/chang/Desktop/simplify-webpack/test/c.js'
+      './a.js': '/Users/chang/Desktop/simply-webpack/test/a.js',
+      './c.js': '/Users/chang/Desktop/simply-webpack/test/c.js'
     }
   },
-  '/Users/chang/Desktop/simplify-webpack/test/a.js': {
+  '/Users/chang/Desktop/simply-webpack/test/a.js': {
     code: "function fn(module, require, exports){'use strict';\n" +
       '\n' +
       'Object.defineProperty(exports, "__esModule", {\n' +
@@ -41,15 +41,15 @@ const modules = {
       '};\n' +
       '\n' +
       'exports.default = add;}',
-    dependencieMap: { './b.js': '/Users/chang/Desktop/simplify-webpack/test/b.js' }
+    dependencieMap: { './b.js': '/Users/chang/Desktop/simply-webpack/test/b.js' }
   },
-  '/Users/chang/Desktop/simplify-webpack/test/c.js': {
+  '/Users/chang/Desktop/simply-webpack/test/c.js': {
     code: "function fn(module, require, exports){'use strict';\n" +
       '\n' +
       "module.exports = 'c';}",
     dependencieMap: {}
   },
-  '/Users/chang/Desktop/simplify-webpack/test/b.js': {
+  '/Users/chang/Desktop/simply-webpack/test/b.js': {
     code: "function fn(module, require, exports){'use strict';\n" +
       '\n' +
       'Object.defineProperty(exports, "__esModule", {\n' +
@@ -62,7 +62,7 @@ const modules = {
   }
 }
 
-const entry = '/Users/chang/Desktop/simplify-webpack/test/index.js'
+const entry = '/Users/chang/Desktop/simply-webpack/test/index.js'
 
 function run(modules) {
   function rawRequire(path) {

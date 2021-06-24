@@ -1,11 +1,11 @@
-## simplify-webpack
+## simply-webpack
 
 模拟实现 `webpack`模块加载功能
 
 ## 使用
 
 ```js
-npm i -D simplify-webpack
+npm i -D simply-webpack
 ```
 
 package.json
